@@ -24,9 +24,18 @@ def main():
         config_manager = ConfigManager()
         print("Configuration loaded successfully")
         
-        # Step 2: Auto-detect running apps (no CLI input needed)
-        app_name = auto_detect_app(config_manager)
-        print(f"Auto-detected app: {app_name}")
+        # Step 2: Get app name (use default or from command line)
+        if len(sys.argv) > 1:
+            app_name = sys.argv[1]
+            print(f"Using specified app: {app_name}")
+        else:
+            app_name = config_manager.get_default_app()
+            print(f"Using default app: {app_name}")
+        
+        # Verify app is running
+        if not is_app_running_standalone(app_name):
+            print(f"Warning: {app_name} is not currently running")
+            print("The automation will attempt to launch it if needed.")
         
         # Step 3: Get app settings
         print(f"Getting configuration for {app_name}...")
@@ -46,7 +55,7 @@ def main():
         objective_ids = None
         if len(sys.argv) > 2:
             objective_ids = sys.argv[2].split(',')
-            print(f"🎯 Specific objectives: {objective_ids}")
+            print(f"Specific objectives: {objective_ids}")
         
         print(f"\nStandard Automation")
         success = run_standard_automation(app_name, objective_ids)
@@ -156,40 +165,6 @@ def finish_automation(success):
         sys.exit(1)
     
     print("=" * 50)
-
-
-def auto_detect_app(config_manager):
-    """Auto-detect running apps from the configured list."""
-    print("Auto-detecting running apps...")
-    
-    # Get list of configured apps
-    configured_apps = config_manager.config.get("apps", [])
-    
-    # Check which apps are currently running
-    running_apps = []
-    for app in configured_apps:
-        app_name = app["name"]
-        if is_app_running_standalone(app_name):
-            running_apps.append(app_name)
-            print(f"  Found running: {app_name}")
-        else:
-            print(f"  Not running: {app_name}")
-    
-    if running_apps:
-        # Prioritize Notepad if it's running
-        if "Notepad" in running_apps:
-            selected_app = "Notepad"
-            print(f"Notepad detected - using Notepad")
-        else:
-            # Use the first running app found
-            selected_app = running_apps[0]
-            print(f"Selected first running app: {selected_app}")
-        return selected_app
-    else:
-        # No apps running, use default
-        default_app = config_manager.get_default_app()
-        print(f"No apps running, using default: {default_app}")
-        return default_app
 
 
 def is_app_running_standalone(app_name):
