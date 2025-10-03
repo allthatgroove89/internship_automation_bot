@@ -1,0 +1,38 @@
+{
+  "apps": [
+    {
+      "name": "Notepad",
+      "path": "C:\\Windows\\System32\\notepad.exe",
+      "startup_delay": 2,
+      "description": "Windows Notepad text editor",
+      "max_retries": 3,
+      "verification_templates": [
+        "templates/notepad_titlebar.png",
+        "templates/notepad_menu.png",
+        "templates/notepad_text_area.png",
+        "templates/notepad_controls.png"
+      ],
+      "use_template_mode": false
+    }
+  ],
+  "default_app": "Notepad",
+  "settings": {
+    "screenshot_path": "screen.png",
+    "enable_ocr": true,
+    "window_position": {
+      "x": 0,
+      "y": 0
+    },
+    "email_notifications": {
+      "enabled": true,
+      "developer_email": "developer@company.com",
+      "user_email": "user@gmail.com"
+    },
+    "retry_policies": {
+      "max_retries": 3,
+      "retry_delay": 2,
+      "on_failure": "notify_developer"
+    }
+  },
+  "instructions_file": "config/instructions.json"
+}

@@ -1,0 +1,52 @@
+{
+  "objectives": [
+    {
+      "id": "notepad_basic_typing",
+      "name": "Basic Notepad Typing",
+      "app": "Notepad",
+      "actions": [
+        {
+          "type": "type_text",
+          "text": "Hello, this is automated typing in Notepad!",
+          "description": "Type hello message"
+        }
+      ],
+      "supported": true
+    },
+    {
+      "id": "notepad_delete_and_close",
+      "name": "Delete All Text and Close Notepad",
+      "app": "Notepad",
+      "actions": [
+        {
+          "type": "hotkey",
+          "keys": ["ctrl", "a"],
+          "description": "Select all text in Notepad",
+          "prerequisites": ["app_maximized"]
+        },
+        {
+          "type": "key_press",
+          "key": "backspace",
+          "description": "Delete all selected text"
+        },
+        {
+          "type": "hotkey",
+          "keys": ["alt", "f4"],
+          "description": "Close Notepad"
+        }
+      ],
+      "supported": true
+    }
+  ],
+  "workflow_templates": [],
+  "retry_policies": {
+    "max_retries": 3,
+    "retry_delay": 2,
+    "on_failure": "notify_developer"
+  },
+  "verification_settings": {
+    "enable_template_matching": true,
+    "enable_ocr": true,
+    "confidence_threshold": 0.8
+  }
+}

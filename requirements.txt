@@ -1,0 +1,13 @@
+# Core automation dependencies
+pyautogui>=0.9.54
+pygetwindow>=0.0.9
+psutil>=5.9.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Email functionality
+python-dotenv>=1.0.0
+
+# Optional: For advanced OCR (if needed later)
+# pytesseract>=0.3.10
+# Pillow>=10.0.0
