@@ -7,14 +7,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Dict, List, Any, Optional, Tuple
-from enum import Enum
-
-
-class RetryPolicy(Enum):
-    """Retry policy options."""
-    GO_BACK_ONE = "go_back_one"
-    THROW_ERROR = "throw_error"
-    ROLLBACK_OBJECTIVE = "rollback_objective"
 
 
 class ErrorHandler:
@@ -75,16 +67,12 @@ class ErrorHandler:
             time.sleep(self.retry_delay)
             return True
         
-        # Max retries exceeded, determine failure policy
-        policy = self._determine_failure_policy(action, objective)
-        
-        if policy == RetryPolicy.GO_BACK_ONE:
-            return self._go_back_one_action(action_history)
-        elif policy == RetryPolicy.THROW_ERROR:
-            return self._throw_error_and_notify(action, objective)
-        elif policy == RetryPolicy.ROLLBACK_OBJECTIVE:
-            return self._rollback_objective_and_notify(action, objective, action_history)
-        
+        # Max retries exceeded, send notification and stop
+        print("Max retries exceeded, sending notification...")
+        self._notify_developer_support(
+            f"Action failed after {self.max_retries} retries",
+            f"Action: {action.get('type', 'unknown')} failed after maximum retries"
+        )
         return False
     
     def _determine_failure_policy(self, action: Dict[str, Any], 
@@ -326,24 +314,38 @@ System: Windows Automation
             msg = MIMEMultipart()
             msg['From'] = self.email_settings.get("developer_email", "automation@system.com")
             msg['To'] = user_email
-            msg['Subject'] = "[Automation System] Unsupported Objectives"
+            msg['Subject'] = "[Automation System] Unsupported Actions Detected"
             
             body = f"""
-Automation System - Unsupported Objectives
+Automation System - Unsupported Actions Report
 
-The following objectives are not yet supported:
+The following actions are currently NOT SUPPORTED by the automation system:
 
-{chr(10).join(f"• {item}" for item in unsupported_list)}
+{chr(10).join(f"• ACTION: {item}" for item in unsupported_list)}
 
-Please contact support if you need these features implemented.
+DETAILS:
+- These actions cannot be executed automatically
+- The system will skip these unsupported actions
+- Only supported actions will be executed
+- Contact support if you need these features implemented
+
+SYSTEM STATUS:
+- Automation will continue with supported actions only
+- No data loss will occur
+- System remains functional
 
 Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}
+
+For support, contact: {self.email_settings.get("developer_email", "support@automation.com")}
             """
             
             msg.attach(MIMEText(body, 'plain'))
             
             # Send email (this would need proper SMTP configuration)
-            print(f"Would send email to {user_email}: Unsupported Objectives")
+            print(f"Would send email to {user_email}: Unsupported Actions Report")
+            print(f"Email would include {len(unsupported_list)} unsupported actions:")
+            for item in unsupported_list:
+                print(f"  - {item}")
             # smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
             # smtp_server.starttls()
             # smtp_server.login(email, password)

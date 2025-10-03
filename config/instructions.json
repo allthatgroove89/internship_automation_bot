@@ -36,6 +36,32 @@
         }
       ],
       "supported": true
+    },
+    {
+      "id": "notepad_unsupported_feature",
+      "name": "Unsupported Notepad Feature",
+      "app": "Notepad",
+      "actions": [
+        {
+          "type": "complex_action",
+          "description": "This is an unsupported feature"
+        }
+      ],
+      "supported": false,
+      "reason": "Feature not yet implemented"
+    },
+    {
+      "id": "notepad_advanced_formatting",
+      "name": "Advanced Text Formatting",
+      "app": "Notepad",
+      "actions": [
+        {
+          "type": "format_text",
+          "description": "Apply bold formatting"
+        }
+      ],
+      "supported": false,
+      "reason": "Notepad doesn't support rich text formatting"
     }
   ],
   "workflow_templates": [],
